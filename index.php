@@ -20,12 +20,15 @@
 <body>
 
 	<div class="ui container" style="margin: 30px auto; width: 95% !important;">
-		<div class="ui middle aligned two column grid" style="margin-bottom: 10px;">
+		<div class="ui middle aligned three column grid" style="margin-bottom: 10px;">
 			<div class="column">
 				<h1 class="ui middle aligned header">
 					<img src="/assets/img/rocket.svg" class="ui big image">
 					The Job List
 				</h1>
+			</div>
+			<div class="center aligned column">
+				<div class="ui success message jobAdded" style="display: none;">Job added successfully!</div>
 			</div>
 			<div class="right aligned column">
 				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i>Run</button>
@@ -41,9 +44,81 @@
 
 	</div>
 
+	<div class="ui modal">
+		<div class="dividing header">Add new job</div>
+		<div class="content">
+			<form class="ui form" id="addJob">
+				<div class="field"><input type="text" class="job_title" placeholder="Job Title" required></div>
+				<div class="field"><input type="text" class="company" placeholder="Company" required></div>
+				<div class="field"><input type="text" class="location" placeholder="Location" required></div>
+				<div class="field"><input type="text" class="job_url" placeholder="Job URL" required></div>
+				<div class="field"><input type="text" class="apply_link" placeholder="Application Link" required></div>
+				<div class="field"><input type="text" class="source" placeholder="Source" required></div>
+				<div class="two fields">
+					<div class="two wide field"><button class="ui primary button" type="submit">Add Job</button></div>
+					<div class="two wide field"><a class="ui button deny">Cancel</a></div>
+				</div>
+					
+			</form>
+		</div>
+	</div>
+
+	<i class="ui circular inverted black plus big link icon addJob" style="position: fixed; bottom: 30px; right: 30px;"></i>
+
+	<script type="text/javascript">
+
+		$("i.addJob").click(function(){
+			$(".ui.modal").modal("show");
+			$(this).fadeOut();
+		});
+
+		$(".deny").click(function(){
+			$(".ui.modal").modal("hide");
+			$("i.addJob").fadeIn();
+		});
+
+		$("#addJob").submit(function (event) {
+		    var formData = {
+		      job_title: $(".job_title").val(),
+		      company: $(".company").val(),
+		      location: $(".location").val(),
+		      apply_link: $(".apply_link").val(),
+		      job_url: $(".job_url").val(),
+		      source: $(".source").val()
+		    };
+
+		    $.ajax({
+		      type: "POST",
+		      url: "addJob.php",
+		      data: formData,
+		      encode: true,
+		    }).done(function (data) {
+				
+				// 1. Close modal
+				$(".ui.modal").modal("hide");
+				$("i.addJob").fadeIn();
+				
+				// 2. Refresh Data Table
+				$.get( "showJobs.php", function( dataJobs ) {
+					$( "#dataList" ).html( dataJobs );
+				});
+
+				// 3. Show Success Message
+				$(".ui.message.jobAdded").fadeIn().html('Job added successfully').delay(5000);
+				$(".ui.message.jobAdded").fadeOut();
+
+		    });
+
+		    event.preventDefault();
+		  });
+
+	</script>
+
 
 
 	<script type="text/javascript">
+
+		// $(".ui.modal").modal("show");
 
 		function getRunStatus() {
 			$.get( "getJobs.php?method=getRun", function( data ) {

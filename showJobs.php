@@ -9,12 +9,12 @@ $applyButton = "";
 			<th class="two wide">Date Posted</th>
 			<th class="three wide">Title</th>
 			<th class="two wide">Company</th>
-			<th class="three wide">Work Type</th>
+			<th class="two wide">Work Type</th>
 			<th class="two wide">Sector</th>
 			<th class="two wide">Location</th>
 			<th class="one wide"></th>
 			<th class="one wide"></th>
-			<th class="one wide"></th>
+			<th class="two wide">Applied</th>
 		</tr>
 	</thead>
 	<?php
@@ -39,7 +39,7 @@ $applyButton = "";
 
 				<div class="ui middle aligned list">
 				  <div class="item">
-				    <i class="ui '.$row->source.' large blue icon"></i>
+				    <img src="assets/img/'.$row->source.'.svg" class="ui image" style="height: 20px;">
 				    <div class="content">
 				    '.date("Y-m-d H:i:s",$row->date).'
 				      <div>'.$row->agoTime.'</div>
