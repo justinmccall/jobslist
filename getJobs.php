@@ -30,10 +30,15 @@ $body = '{
 
 set_time_limit(300);
 
-$request = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/run-sync-get-dataset-items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
-$res = $client->sendAsync($request)->wait();
+// // Start Run
+// $requestRun = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
+// $resRun = $client->sendAsync($requestRun)->wait();
 
-$allJobs = $res->getBody();
+// get Dataset
+$requestData = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs/last/dataset/items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
+$resData = $client->sendAsync($requestData)->wait();
+
+$allJobs = $resData->getBody();
 
 
 
