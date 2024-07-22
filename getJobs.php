@@ -82,6 +82,6 @@ foreach ($allJobs as $data) {
       }
 }
 
-if(isset($_POST)) {
+if(isset($_POST['submit'])) {
   header("Location: index.php");
 }
