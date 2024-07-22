@@ -3,7 +3,7 @@ require 'db.php';
 $applyButton = "";
 ?>
 
-<table class="ui compact small selectable table">
+<table class="ui compact small selectable table" id="jobsList">
 	<thead>
 		<tr>
 			<th class="one wide">Date Posted</th>
@@ -74,6 +74,11 @@ $applyButton = "";
 </table>
 
 <script type="text/javascript">
+
+	new DataTable('#jobsList',{
+		 pageLength: 25
+	});
+
 	$("i").popup();
 	$('.ui.dropdown').dropdown({
 

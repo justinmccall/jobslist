@@ -8,7 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>The Job List</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.js"></script>	
+
+	<link rel="stylesheet" href="//cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
+	<script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.css">
 	<link rel="icon" href="/assets/img/rocket.svg">
 
