@@ -39,7 +39,7 @@ $applyButton = "";
 
 				<div class="ui middle aligned list">
 				  <div class="item">
-				    <img src="assets/img/'.$row->source.'.svg" class="ui image" style="height: 20px;">
+				    <img src="assets/img/'.strtolower($row->source).'.svg" class="ui image" style="height: 20px;" title="'.$row->source.'">
 				    <div class="content">
 				    '.date("Y-m-d H:i:s",$row->date).'
 				      <div>'.$row->agoTime.'</div>
