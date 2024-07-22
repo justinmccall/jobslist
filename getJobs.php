@@ -28,6 +28,8 @@ $body = '{
     "title": "product"
 }';
 
+set_time_limit(300);
+
 $request = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/run-sync-get-dataset-items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
 $res = $client->sendAsync($request)->wait();
 
