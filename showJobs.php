@@ -7,6 +7,7 @@ $applyButton = "";
 	<thead>
 		<tr>
 			<th class="one wide">Date Posted</th>
+			<th class="one wide">Date Posted</th>
 			<th class="three wide">Title</th>
 			<th class="two wide">Company</th>
 			<th class="three wide">Work Type</th>
@@ -21,7 +22,7 @@ $applyButton = "";
 
 	$statusLabels = array("new" => "blue","applied" => "orange","in_progress" => "green","rejected" => "red","not_interested" => "black");
 
-	$sql = "SELECT * FROM jobs WHERE status != 'not_interested' ORDER BY date DESC";
+	$sql = "SELECT * FROM jobs WHERE status != 'not_interested' ORDER BY date ASC";
 	$result = $mysqli->query($sql);
 	while($row = $result->fetch_object()){
 
@@ -31,16 +32,17 @@ $applyButton = "";
 				$applyButton = '<a class="ui left labeled icon tiny teal button" href="'.$row->apply_url.'" target="_blank"><i class="ui external icon"></i>Apply</a>';
 		}
 
-		($row->updatedDate != '') ? $updatedDate = $row->updatedDate = date("Y-m-d H:i:s",$row->updatedDate) : $updatedDate = '';
+		($row->updatedDate != '') ? $updatedDate = $row->updatedDate = date("Y-m-d H:i:s",$row->updatedDate) : $updatedDate = '<a class="ui tertiary button not-interested" data-id="'.$row->id.'">Nope</a>';
 
 		echo '
 		<tr class="'.$statusLabels[$row->status].' colored left '.$statusLabels[$row->status].' marked">
+			<td>'.date("Y-m-d H:i:s",$row->date).'</td>
 			<td>
 				<div class="ui middle aligned list">
 				  <div class="item">
 				    <i class="ui '.$row->source.' large blue icon"></i>
 				    <div class="content">
-				      <div>'.date("Y-m-d",$row->date).'</div>
+				      <div>'.$row->agoTime.'</div>
 				    </div>
 				  </div>
 				</div>					
@@ -76,7 +78,23 @@ $applyButton = "";
 <script type="text/javascript">
 
 	new DataTable('#jobsList',{
-		 pageLength: 25
+		order: {
+			idx: 0,
+			dir: 'desc'
+		},
+		pageLength: 250
+	});
+
+	$(".not-interested").click(function(){
+		var jobId = $(this).data( "id" );
+		$.get( "updateJob.php?status=not_interested&id="+jobId, function( data ) {
+
+			$.get( "showJobs.php", function( data2 ) {
+				$( "#dataList" ).html( data2 );
+				$("#getData").removeClass('loading');
+			});
+
+		});
 	});
 
 	$("i").popup();

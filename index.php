@@ -27,7 +27,14 @@
 					The Job List
 				</h1>
 			</div>
-			<div class="right aligned column"><i class="ui refresh grey icon" id="getData" style="cursor: pointer;"></i></div>
+			<div class="right aligned column">
+				<form class="ui form" enctype="multipart/form-data" action="getJobs.php" method="POST">
+					<div class="fields">
+						<div class="field"><input type="file" name="upload"></div>
+						<div class="field"><button class="ui button">Upload</button></div>
+					</div>
+				</form>				
+			</div>
 		</div>		
 		<div id="dataList"></div>
 		<div class="ui grid" style="padding-top: 15px;">
