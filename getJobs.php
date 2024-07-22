@@ -11,87 +11,85 @@ use GuzzleHttp\Psr7\Request;
 
 $client = new Client();
 
-$headers = [
-  'Content-Type' => 'application/json'
-];
+switch($_GET['method']){
 
-$body = '{
-    "location": "dubai",
-    "proxy": {
-        "useApifyProxy": true,
-        "apifyProxyGroups": [
-            "RESIDENTIAL"
-        ]
-    },
-    "publishedAt": "r86400",
-    "rows": 100,
-    "title": "product"
-}';
+  case "run":
 
-set_time_limit(300);
+    $headers = [
+      'Content-Type' => 'application/json'
+    ];
 
-// // Start Run
-// $requestRun = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
-// $resRun = $client->sendAsync($requestRun)->wait();
+    $body = '{
+        "location": "dubai",
+        "proxy": {
+            "useApifyProxy": true,
+            "apifyProxyGroups": [
+                "RESIDENTIAL"
+            ]
+        },
+        "publishedAt": "r86400",
+        "rows": 100,
+        "title": "product"
+    }';
 
-// get Dataset
-$requestData = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs/last/dataset/items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
-$resData = $client->sendAsync($requestData)->wait();
+    // Start Run
+    $requestRun = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
+    $resRun = $client->sendAsync($requestRun)->wait();  
 
-$allJobs = $resData->getBody();
+    break;
 
-print '<pre>';
-print_r($allJobs);
-print '</pre>';
+  case "getData":
 
+    // get Dataset
+    $allJobs = json_decode(file_get_contents('https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs/last/dataset/items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY'));
 
-$target_dir = "uploads/";
-$target_file = 'jobs.json';
+    foreach ($allJobs as $data) {
 
-if(isset($_POST['submit'])) {
-  move_uploaded_file($_FILES["upload"]["tmp_name"], $target_dir.$target_file);
-}
+      if(count((array)$data) > 10){
 
-// $allJobs = json_decode(file_get_contents('uploads/jobs.json'));
+          $sql = "
+          SELECT * FROM jobs
+          WHERE 
+            position = '".addslashes($data->title)."' 
+            AND company = '".addslashes($data->companyName)."' 
+            AND location = '".addslashes($data->location)."'";
+          $result = $mysqli->query($sql);
+          $resultFound = $result->num_rows;
 
-foreach ($allJobs as $data) {
+          if($resultFound == 0){
 
-      $sql = "
-      SELECT * FROM jobs
-      WHERE 
-        position = '".addslashes($data->title)."' 
-        AND company = '".addslashes($data->companyName)."' 
-        AND location = '".addslashes($data->location)."'";
-      $result = $mysqli->query($sql);
-      $resultFound = $result->num_rows;
+            if($data->applyType == 'EASY_APPLY'){
+              $easyApply = 1;
+            }else{
+              $easyApply = 0;
+            }
 
-      if($resultFound == 0){
-
-        if($data->applyType == 'EASY_APPLY'){
-          $easyApply = 1;
-        }else{
-          $easyApply = 0;
+            $insert = "INSERT INTO jobs(position,description,company,location,date,agoTime,jobUrl,easy_apply,apply_url,source,status, work_type, sector) VALUES(
+              '".addslashes($data->title)."',
+              '".base64_encode($data->description)."',
+              '".addslashes($data->companyName)."',
+              '".addslashes($data->location)."',
+              '".strtotime($data->postedTime)."',
+              '".$data->postedTime."',
+              '".$data->jobUrl."',
+              '".$easyApply."',
+              '".$data->applyUrl."',
+              'linkedin',
+              'new',
+              '".$data->workType."',
+              '".$data->sector."'
+            )";
+            $mysqli->query($insert);
+          }
         }
+    }
 
-        $insert = "INSERT INTO jobs(position,description,company,location,date,agoTime,jobUrl,easy_apply,apply_url,source,status, work_type, sector) VALUES(
-          '".addslashes($data->title)."',
-          '".base64_encode($data->description)."',
-          '".addslashes($data->companyName)."',
-          '".addslashes($data->location)."',
-          '".strtotime($data->postedTime)."',
-          '".$data->postedTime."',
-          '".$data->jobUrl."',
-          '".$easyApply."',
-          '".$data->applyUrl."',
-          'linkedin',
-          'new',
-          '".$data->workType."',
-          '".$data->sector."'
-        )";
-        $mysqli->query($insert);
-      }
-}
+    break;
 
-if(isset($_POST['submit'])) {
-  header("Location: index.php");
+    case "getRun":
+      $getRun = json_decode(file_get_contents('https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs/last?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY'));
+      echo $getRun->data->status;
+    // echo 'RUNNING';
+    // echo 'SUCCEEDED';
+      break;
 }

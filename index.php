@@ -28,12 +28,8 @@
 				</h1>
 			</div>
 			<div class="right aligned column">
-				<form class="ui form" enctype="multipart/form-data" action="getJobs.php" method="POST">
-					<div class="fields">
-						<div class="field"><input type="file" name="upload"></div>
-						<div class="field"><button class="ui button">Upload</button></div>
-					</div>
-				</form>				
+				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i>Run</button>
+				<button class="ui left labeled icon primary button" id="loadData" data-method="getData"><i class="database icon"></i>Load Data</button>
 			</div>
 		</div>		
 		<div id="dataList"></div>
@@ -48,26 +44,48 @@
 
 
 	<script type="text/javascript">
+
+		function getRunStatus() {
+			$.get( "getJobs.php?method=getRun", function( data ) {
+
+				console.log(data);
+				
+				if(data == 'RUNNING'){
+					$("#loadData i").removeClass('database');
+					$("#loadData i").addClass('circle notch loading');
+					$("#loadData").addClass('disabled');
+				}
+
+				if(data == 'SUCCEEDED'){
+					$("#loadData i").addClass('database');
+					$("#loadData i").removeClass('circle notch loading');
+					$("#loadData").removeClass('disabled');
+				}
+
+			});
+		}
+
+		setInterval(getRunStatus, 30000);
 		
 		$.get( "showJobs.php", function( data ) {
 			$( "#dataList" ).html( data );
 		});
 
-		$("#getData").click(function(){
-
-			$(this).addClass('loading');
+		$("#getData,#loadData,#checkData").click(function(){
 
 			$( "#dataList" ).html('<div class="ui placeholder"><div class="image header"><div class="line"></div><div class="line"></div></div><div class="paragraph"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div></div>');
 
-			$.get( "getJobs.php", function( data ) {
+			var runMethod = $(this).data( "method" );
 
+			$.get( "getJobs.php?method="+runMethod, function( data ) {
 
+				// $("#getData").prepend('Done!');
+				// alert(data);
 
 			}).done(function(){
 
 				$.get( "showJobs.php", function( data2 ) {
 					$( "#dataList" ).html( data2 );
-					$("#getData").removeClass('loading');
 				});
 
 			});

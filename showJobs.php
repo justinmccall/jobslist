@@ -6,8 +6,7 @@ $applyButton = "";
 <table class="ui compact small selectable table" id="jobsList">
 	<thead>
 		<tr>
-			<th class="one wide">Date Posted</th>
-			<th class="one wide">Date Posted</th>
+			<th class="two wide">Date Posted</th>
 			<th class="three wide">Title</th>
 			<th class="two wide">Company</th>
 			<th class="three wide">Work Type</th>
@@ -20,7 +19,7 @@ $applyButton = "";
 	</thead>
 	<?php
 
-	$statusLabels = array("new" => "blue","applied" => "orange","in_progress" => "green","rejected" => "red","not_interested" => "black");
+	$statusLabels = array("new" => "blue","potential" => "purple","applied" => "yellow","in_progress" => "green","rejected" => "red","not_interested" => "grey");
 
 	$sql = "SELECT * FROM jobs WHERE status != 'not_interested' ORDER BY date ASC";
 	$result = $mysqli->query($sql);
@@ -36,12 +35,13 @@ $applyButton = "";
 
 		echo '
 		<tr class="'.$statusLabels[$row->status].' colored left '.$statusLabels[$row->status].' marked">
-			<td>'.date("Y-m-d H:i:s",$row->date).'</td>
 			<td>
+
 				<div class="ui middle aligned list">
 				  <div class="item">
 				    <i class="ui '.$row->source.' large blue icon"></i>
 				    <div class="content">
+				    '.date("Y-m-d H:i:s",$row->date).'
 				      <div>'.$row->agoTime.'</div>
 				    </div>
 				  </div>
