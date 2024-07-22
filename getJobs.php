@@ -1,37 +1,37 @@
 <?php
 
 require 'db.php';
-// require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-// use Psr\Http\Message\ResponseInterface;
-// use GuzzleHttp\Exception\RequestException;
-// use GuzzleHttp\Client;
-// use GuzzleHttp\Psr7\Utils;
-// use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Utils;
+use GuzzleHttp\Psr7\Request;
 
-// $client = new Client();
+$client = new Client();
 
-// $headers = [
-//   'Content-Type' => 'application/json'
-// ];
+$headers = [
+  'Content-Type' => 'application/json'
+];
 
-// $body = '{
-//     "location": "dubai",
-//     "proxy": {
-//         "useApifyProxy": true,
-//         "apifyProxyGroups": [
-//             "RESIDENTIAL"
-//         ]
-//     },
-//     "publishedAt": "r86400",
-//     "rows": 100,
-//     "title": "product"
-// }';
+$body = '{
+    "location": "dubai",
+    "proxy": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": [
+            "RESIDENTIAL"
+        ]
+    },
+    "publishedAt": "r86400",
+    "rows": 100,
+    "title": "product"
+}';
 
-// $request = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/run-sync-get-dataset-items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
-// $res = $client->sendAsync($request)->wait();
+$request = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/run-sync-get-dataset-items?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
+$res = $client->sendAsync($request)->wait();
 
-// $allJobs = $res->getBody();
+$allJobs = $res->getBody();
 
 
 
@@ -42,7 +42,7 @@ if(isset($_POST['submit'])) {
   move_uploaded_file($_FILES["upload"]["tmp_name"], $target_dir.$target_file);
 }
 
-$allJobs = json_decode(file_get_contents('uploads/jobs.json'));
+// $allJobs = json_decode(file_get_contents('uploads/jobs.json'));
 
 foreach ($allJobs as $data) {
 
