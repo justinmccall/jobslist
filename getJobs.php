@@ -40,6 +40,9 @@ $resData = $client->sendAsync($requestData)->wait();
 
 $allJobs = $resData->getBody();
 
+print '<pre>';
+print_r($allJobs);
+print '</pre>';
 
 
 $target_dir = "uploads/";
