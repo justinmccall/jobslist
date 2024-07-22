@@ -38,7 +38,7 @@ require 'db.php';
 $target_dir = "uploads/";
 $target_file = 'jobs.json';
 
-if(isset($_POST)) {
+if(isset($_POST['submit'])) {
   move_uploaded_file($_FILES["upload"]["tmp_name"], $target_dir.$target_file);
 }
 
