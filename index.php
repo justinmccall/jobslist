@@ -31,8 +31,8 @@
 				<div class="ui success message jobAdded" style="display: none;">Job added successfully!</div>
 			</div>
 			<div class="right aligned column">
-				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i>Run</button>
-				<button class="ui left labeled icon primary button" id="loadData" data-method="getData"><i class="database icon"></i>Load Data</button>
+				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i><span class="label">Run</span></button>
+				<button class="ui left labeled icon primary button" id="loadData" data-method="getData" style="display: none;"><i class="database icon"></i>Load Data</button>
 			</div>
 		</div>		
 		<div id="dataList"></div>
@@ -117,28 +117,37 @@
 
 
 	<script type="text/javascript">
+		
+		function changeDataButton(data){
+			if(data == 'RUNNING'){
+				$("#getData").addClass('disabled');
+				$("#getData i").removeClass('download');
+				$("#getData i").addClass('circle notch loading');
+				$("#getData .label").html('Running');
+				$("#loadData").hide();
+			}
 
-		// $(".ui.modal").modal("show");
+			if(data == 'SUCCEEDED'){
+				$("#getData").removeClass('disabled');
+				$("#getData i").addClass('download');
+				$("#getData i").removeClass('circle notch loading');
+				$("#getData .label").html('Run');					
+				$("#loadData").show();
+			}			
+		}
 
 		function getRunStatus() {
 			$.get( "getJobs.php?method=getRun", function( data ) {
 
 				console.log(data);
-				
-				if(data == 'RUNNING'){
-					$("#loadData i").removeClass('database');
-					$("#loadData i").addClass('circle notch loading');
-					$("#loadData").addClass('disabled');
-				}
-
-				if(data == 'SUCCEEDED'){
-					$("#loadData i").addClass('database');
-					$("#loadData i").removeClass('circle notch loading');
-					$("#loadData").removeClass('disabled');
-				}
+				changeDataButton(data);				
 
 			});
 		}
+
+		window.onload = function() {
+			getRunStatus();
+		};
 
 		setInterval(getRunStatus, 30000);
 		
@@ -146,16 +155,17 @@
 			$( "#dataList" ).html( data );
 		});
 
-		$("#getData,#loadData,#checkData").click(function(){
+		$("#getData,#loadData").click(function(){
 
 			$( "#dataList" ).html('<div class="ui placeholder"><div class="image header"><div class="line"></div><div class="line"></div></div><div class="paragraph"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div></div>');
 
 			var runMethod = $(this).data( "method" );
 
-			$.get( "getJobs.php?method="+runMethod, function( data ) {
+			if(runMethod == 'run'){
+				changeDataButton("RUNNING");
+			}
 
-				// $("#getData").prepend('Done!');
-				// alert(data);
+			$.get( "getJobs.php?method="+runMethod, function( data ) {
 
 			}).done(function(){
 

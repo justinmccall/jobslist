@@ -26,9 +26,11 @@ $applyButton = "";
 	while($row = $result->fetch_object()){
 
 		if($row->status != 'applied'){
-			($row->easy_apply == 1) ? 
-				$applyButton = '<a class="ui left labeled icon tiny primary button" href="'.$row->apply_url.'" target="_blank"><i class="ui linkedin icon"></i>Apply</a>' :
+			if($row->easy_apply == 1) { 
+				$applyButton = '<a class="ui left labeled icon tiny primary button" href="'.$row->apply_url.'" target="_blank"><i class="ui linkedin icon"></i>Apply</a>';
+			}else{
 				$applyButton = '<a class="ui left labeled icon tiny teal button" href="'.$row->apply_url.'" target="_blank"><i class="ui external icon"></i>Apply</a>';
+			}
 		}
 
 		($row->updatedDate != '') ? $updatedDate = $row->updatedDate = date("Y-m-d H:i:s",$row->updatedDate) : $updatedDate = '<a class="ui tertiary button not-interested" data-id="'.$row->id.'">Nope</a>';
