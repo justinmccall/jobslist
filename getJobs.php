@@ -15,9 +15,13 @@ switch($_GET['method']){
 
   case "run":
 
-    $headers = [
-      'Content-Type' => 'application/json'
-    ];
+    if(!isset($_GET['keyword'])){
+      $keyword = "product";
+    }else{
+      $keyword = $_GET['keyword'];
+    }
+
+    $headers = ['Content-Type' => 'application/json'];
 
     $body = '{
         "location": "dubai",
@@ -29,12 +33,12 @@ switch($_GET['method']){
         },
         "publishedAt": "r86400",
         "rows": 100,
-        "title": "product"
+        "title": "'.$keyword.'"
     }';
 
     // Start Run
     $requestRun = new Request('POST', 'https://api.apify.com/v2/acts/bebity~linkedin-jobs-scraper/runs?token=apify_api_oUFADUs12mZSQPFwJSMv3GZBhEV3f12wTzyY', $headers, $body);
-    $resRun = $client->sendAsync($requestRun)->wait();  
+    $resRun = $client->sendAsync($requestRun)->wait();
 
     break;
 

@@ -8,10 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>The Job List</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.js"></script>	
 
-	<link rel="stylesheet" href="//cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
-	<script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
+	<link href="https://cdn.datatables.net/v/se/jq-3.7.0/dt-2.1.0/b-3.1.0/date-1.5.2/sb-1.7.1/datatables.min.css" rel="stylesheet">
+	<script src="https://cdn.datatables.net/v/se/jq-3.7.0/dt-2.1.0/b-3.1.0/date-1.5.2/sb-1.7.1/datatables.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.js"></script>	
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.3/semantic.min.css">
 	<link rel="icon" href="/assets/img/rocket.svg">
@@ -31,8 +32,30 @@
 				<div class="ui success message jobAdded" style="display: none;">Job added successfully!</div>
 			</div>
 			<div class="right aligned column">
-				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i><span class="label">Run</span></button>
-				<button class="ui left labeled icon primary button" id="loadData" data-method="getData"><i class="database icon"></i>Load Data</button>
+				<form class="ui form">
+					<div class="inline fields">
+						<div class="six wide field"><input type="text" class="keyword" placeholder="Choose a keyword..."></div>
+						<div class="three wide field"><button class="ui left labeled icon primary fluid button" id="getData" data-method="run"><i class="download icon"></i><span class="label">Run</span></button></div>
+						<div class="three wide field"><button class="ui left labeled icon primary fluid button" id="loadData" data-method="getData"><i class="database icon"></i>Load Data</button></div>
+						<div class="four wide field">
+							<div class="ui selection dropdown fluid filter">
+								<input type="hidden" name="">
+								<i class="dropdown icon"></i>
+								<div class="default text">Filter Jobs</div>
+								<div class="menu">
+									<div class="actionable item" data-value="all"><i class="ui empty circular label"></i>All</div>
+									<div class="actionable item" data-value="active"><i class="ui empty circular label"></i>Active</div>
+									<?php
+										foreach($statusLabels AS $label=>$icon){
+											echo '<div class="actionable item" data-value="'.$label.'"><i class="ui '.$icon.' empty circular label"></i>'.ucwords(str_replace("_"," ",$label)).'</div>';
+										}
+									?>
+								</div>
+							</div>	
+						</div>
+					</div>
+				</form>
+
 			</div>
 		</div>		
 		<div id="dataList"></div>
@@ -112,6 +135,17 @@
 		    event.preventDefault();
 		  });
 
+			$('.ui.dropdown.filter').dropdown({
+
+				collapseOnActionable: false,
+				onActionable: function(value, text, $selected) {
+					$.get( "showJobs.php?filter="+value, function( data ) {
+						$( "#dataList" ).html( data );
+						$("#getData").removeClass('loading');
+					});
+				}
+			});
+
 	</script>
 
 
@@ -151,7 +185,7 @@
 
 		setInterval(getRunStatus, 30000);
 		
-		$.get( "showJobs.php", function( data ) {
+		$.get( "showJobs.php?filter=default", function( data ) {
 			$( "#dataList" ).html( data );
 		});
 
@@ -160,12 +194,13 @@
 			$( "#dataList" ).html('<div class="ui placeholder"><div class="image header"><div class="line"></div><div class="line"></div></div><div class="paragraph"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div></div>');
 
 			var runMethod = $(this).data( "method" );
+			var keyword = $("input.keyword").val();
 
 			if(runMethod == 'run'){
 				changeDataButton("RUNNING");
 			}
 
-			$.get( "getJobs.php?method="+runMethod, function( data ) {
+			$.get( "getJobs.php?method="+runMethod+"&keyword="+keyword, function( data ) {
 
 			}).done(function(){
 
