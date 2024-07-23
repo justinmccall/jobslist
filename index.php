@@ -32,7 +32,7 @@
 			</div>
 			<div class="right aligned column">
 				<button class="ui left labeled icon primary button" id="getData" data-method="run"><i class="download icon"></i><span class="label">Run</span></button>
-				<button class="ui left labeled icon primary button" id="loadData" data-method="getData" style="display: none;"><i class="database icon"></i>Load Data</button>
+				<button class="ui left labeled icon primary button" id="loadData" data-method="getData"><i class="database icon"></i>Load Data</button>
 			</div>
 		</div>		
 		<div id="dataList"></div>
