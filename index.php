@@ -136,10 +136,10 @@
 		  });
 
 			$('.ui.dropdown.filter').dropdown({
-
 				collapseOnActionable: false,
 				onActionable: function(value, text, $selected) {
 					$.get( "showJobs.php?filter="+value, function( data ) {
+						alert(value);
 						$( "#dataList" ).html( data );
 						$("#getData").removeClass('loading');
 					});
@@ -160,7 +160,6 @@
 				$("#getData .label").html('Running');
 				$("#loadData").hide();
 			}
-
 			if(data == 'SUCCEEDED'){
 				$("#getData").removeClass('disabled');
 				$("#getData i").addClass('download');
@@ -172,17 +171,12 @@
 
 		function getRunStatus() {
 			$.get( "getJobs.php?method=getRun", function( data ) {
-
 				console.log(data);
 				changeDataButton(data);				
-
 			});
 		}
 
-		window.onload = function() {
-			getRunStatus();
-		};
-
+		window.onload = function() { getRunStatus(); };
 		setInterval(getRunStatus, 30000);
 		
 		$.get( "showJobs.php?filter=default", function( data ) {

@@ -1,10 +1,6 @@
 <?php
 	require 'db.php';
 	$applyButton = "";
-	if(!isset($_GET['fitler'])){
-		$_GET['filter'] = 'active';
-	}
-
 
 	switch($_GET['filter']){
 		default:
@@ -21,6 +17,9 @@
 			break;
 		case "applied":
 			$sql = "SELECT * FROM jobs WHERE status = 'applied' ORDER BY date ASC";
+			break;
+		case "read":
+			$sql = "SELECT * FROM jobs WHERE status = 'read' ORDER BY date ASC";
 			break;
 		case "in_progress":
 			$sql = "SELECT * FROM jobs WHERE status = 'in_progress' ORDER BY date ASC";
